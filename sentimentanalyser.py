@@ -11,6 +11,10 @@ def edit_dist(a,b):
                 add += 1
             if i==0 or j==0:
                 sol[i][j]=add
+                if i>0:
+                    sol[i][j]=max(sol[i][j],sol[i-1][j])
+                if j>0:
+                    sol[i][j]=max(sol[i][j],sol[i][j-1])
             else:
                 if add:
                     sol[i][j]=sol[i-1][j-1]+1
