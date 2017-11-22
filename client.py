@@ -51,13 +51,15 @@ def handle_aggregated(challenge, analyser):
         sentiments[company][tweet.time].append(result);
     sols = {}
     for company in sentiments:
+        lastval = 0
         for time in sentiments[company]:
             if (not(company in sols)):
                 sols[company] = {}
             if (len(sentiments[company][time]) == 0):
-                sols[company][time] = 0
+                sols[company][time] = lastval
             else:
-                sols[company][time] = 1.0*sum(sentiments[company][time])/len(sentiments[company][time])
+                lastval = 1.0*sum(sentiments[company][time])/len(sentiments[company][time])
+                sols[company][time] = lastval
 
     submission = {'challengeId': challenge.info.cid, 'sentiments': sols}
     result = webhandler.post_aggregated_submission(submission)
