@@ -3,6 +3,12 @@ import webhandler
 import numpy as np
 
 def edit_dist(a,b):
+    # hack to avoid recognising these as same
+    if a == 'Entertainment' and b == 'Oystertainment':
+        return 10
+    elif a == 'Oystertainment' and b == 'Entertainment':
+        return 10
+    
     sol=np.zeros((len(a),len(b)))
     for i in range(len(a)):
         for j in range(len(b)):
@@ -20,7 +26,8 @@ def edit_dist(a,b):
                     sol[i][j]=sol[i-1][j-1]+1
                 else:
                     sol[i][j]=max(sol[i][j-1],sol[i-1][j])
-    return sol[len(a)-1][len(b)-1] - abs(len(a) - len(b))
+    # return (sol[len(a)-1][len(b)-1] - abs(len(a) - len(b))) / len(b)
+    return (len(a) + len(b) - 2 * sol[len(a) - 1][len(b) - 1]) / 2
 
 
 class SentimentAnalyser(object):
@@ -35,7 +42,9 @@ class SentimentAnalyser(object):
     def analyse_tweet(self, tweet):
         """Analyse a tweet, extracting the subject and sentiment"""
         sentiment = 0
-        subject = self.tweet_subject(tweet)
+        # subject = self.tweet_subject(tweet)
+        subjects = self.tweet_subjects(tweet)
+        subject = subjects[0] if len(subjects) > 0 else "NONE"
         negated = False
 
         for word in tweet.split(" "):
@@ -74,3 +83,35 @@ class SentimentAnalyser(object):
 
         # print(best, best_my, best_score)
         return best
+
+    def remove_stop(self, words):
+        res = []
+        stop_words = ['i', 'is', 'that', 'ok', 'good', 'okay', 'bad',
+                      'cool', 'not', 'do', 'to', 'worse', 'than', 'am', 'My', 'my', 'a', 'had', 'and', 'so', 'are']
+        for word in words:
+            if not word.lower() in stop_words:
+                res.append(word)
+        return res
+    
+    def tweet_contains(self, tweet, obj):
+        candidates = self.remove_stop(tweet.split(' '))
+        if ' ' in obj:
+            candidates = [a + ' ' + b for a, b in zip(candidates, candidates[1:])]
+
+        for c in candidates:
+            if edit_dist(c, obj) < 3:
+                if (len(obj) > 4 and len(c) > 4) or c == obj:
+                    return True
+        return False
+
+    def tweet_subjects(self, tweet):
+        res = []
+        for company in self.companies:
+            words = [company.name] + [p.name for p in company.products]
+            recognised = False
+            for word in words:
+                recognised = recognised or self.tweet_contains(tweet, word)
+            if recognised:
+                res.append(company.name)
+
+        return res
