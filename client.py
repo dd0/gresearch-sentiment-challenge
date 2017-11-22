@@ -29,7 +29,7 @@ def handle_pertweet(challenge, analyser):
     """Handle a per-tweet challenge"""
     sentiments = {}
     for tweet in challenge.tweets:
-        sentiment_list = analyser.analyse_tweet(tweet.tweet)
+        sentiment_list = analyser.analyse_tweet(tweet.tweet, True)
         sentiments[tweet.tid] = [{'subject': subject, 'sentiment': sentiment} 
                 for (subject, sentiment) in sentiment_list]
     submission = {'challengeId': challenge.info.cid, 'perTweetSentiment': sentiments}
