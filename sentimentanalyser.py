@@ -43,8 +43,6 @@ class SentimentAnalyser(object):
         self.comparison_words = ['better', 'worse', 'prefer']
         self.company_names = [c.name for c in self.companies]
 
-<<<<<<< Updated upstream
-<<<<<<< HEAD
     def splitt(self, tweet):
         subject1 = None
         subject2 = None
@@ -57,7 +55,7 @@ class SentimentAnalyser(object):
 
         cs = self.tweet_subjects(tweet)
         for cand in cs:
-            if subject1 == None:
+            if subject1 is None:
                 subject1 = cand
             else:
                 subject2 = cand
@@ -72,13 +70,7 @@ class SentimentAnalyser(object):
         else:
             return [(subject1, 1), (subject2, -1)]
 
-    def analyse_tweet(self, tweet, multi=False):
-=======
-        print(self.positive_words)
-        print(self.negative_words)
-
     def analyse_tweet(self, tweet, multi=False, verbose=False):
->>>>>>> Stashed changes
         """Analyse a tweet, extracting the subject and sentiment"""
         sentiment = 0
         # subject = self.tweet_subject(tweet)
@@ -87,15 +79,11 @@ class SentimentAnalyser(object):
         negated = False
 
         for word in tweet.split(" "):
-<<<<<<< Updated upstream
             if word in self.comparison_words:
                 return self.splitt(tweet)
 
         for word in tweet.split(" "):
-            if word in self.positive_words:
-=======
             if clean(word) in self.positive_words:
->>>>>>> Stashed changes
                 sentiment = sentiment + 1
             if clean(word) in self.negative_words:
                 sentiment = sentiment - 1
@@ -156,7 +144,7 @@ class SentimentAnalyser(object):
             candidates = [a + ' ' + b for a, b in zip(candidates, candidates[1:])]
 
         for c in candidates:
-            if edit_dist(c, obj) < 3:
+            if edit_dist(c, obj) <= 3:
                 if (len(obj) > 4 and len(c) > 4) or c == obj:
                     return True
         return False
