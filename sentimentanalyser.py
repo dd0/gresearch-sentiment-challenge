@@ -50,7 +50,7 @@ class SentimentAnalyser(object):
         for word in tweet.split(" "):
             if word.upper() == "WORSE":
                 negated = not negated
-            if word.upper() == 'NOT':
+            if word.lower() in ['not', 'don\'t']:
                 negated = not negated
 
         cs = self.tweet_subjects(tweet)
@@ -87,7 +87,7 @@ class SentimentAnalyser(object):
                 sentiment = sentiment + 1
             if clean(word) in self.negative_words:
                 sentiment = sentiment - 1
-            if clean(word).upper() == 'NOT':
+            if clean(word).lower() in ['not', 'don\'t']:
                 negated = not negated
             if verbose:
                 print(word, sentiment)
