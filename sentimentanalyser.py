@@ -132,7 +132,7 @@ class SentimentAnalyser(object):
         stop_words = ['i', 'is', 'that', 'ok', 'good', 'okay', 'bad',
                       'cool', 'not', 'do', 'to', 'worse', 'than',
                       'am', 'My', 'my', 'a', 'had', 'and', 'so',
-                      'are']
+                      'are', 'about', 'don\'t']
         for word in words:
             if not word.lower() in stop_words:
                 res.append(word)
@@ -144,8 +144,10 @@ class SentimentAnalyser(object):
             candidates = [a + ' ' + b for a, b in zip(candidates, candidates[1:])]
 
         for c in candidates:
-            if edit_dist(c, obj) <= 3:
+            if edit_dist(c, obj) < (3 if len(obj) < 7 else 4):
                 if (len(obj) > 4 and len(c) > 4) or c == obj:
+                    if c != obj:
+                        print(c, obj, edit_dist(c, obj))
                     return True
         return False
 
