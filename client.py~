@@ -54,10 +54,10 @@ def handle_aggregated(challenge, analyser):
         for time in sentiments[company]:
             if (not(company in sols)):
                 sols[company] = {}
-            if (len(sentiments[company][time]) == 0):
+            if (length(sentiments[company][time]) == 0):
                 sols[company][time] = 0
             else:
-                sols[company][time] = 1.0*sum(sentiments[company][time])/len(sentiments[company][time])
+                sols[company][time] = 1.0*sum(sentiments[company][time])/length(sentiments[company][time])
 
     submission = {'challengeId': challenge.info.cid, 'sentiments': sols}
     result = webhandler.post_aggregated_submission(submission)
