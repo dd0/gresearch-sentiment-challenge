@@ -15,6 +15,7 @@ class SentimentAnalyser(object):
         """Analyse a tweet, extracting the subject and sentiment"""
         sentiment = 0
         subject = None
+        negated = False
 
         for word in tweet.split(" "):
             if word in self.positive_words:
@@ -23,10 +24,14 @@ class SentimentAnalyser(object):
                 sentiment = sentiment - 1
             if word in self.company_names:
                 subject = word
+            if word.upper() == 'NOT':
+                negated = not negated
 
         if sentiment < 0:
             sentiment = -1
         elif sentiment > 0:
             sentiment = 1
+        if negated:
+            sentiment = -sentiment
 
         return [(subject, sentiment)]
