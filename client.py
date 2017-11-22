@@ -19,17 +19,17 @@ def main():
         challenge = webhandler.get_challenge(info.cid)
 
         if info.challenge_type == "pertweet":
-            handle_pertweet(challenge, analyser)
+            handle_pertweet(challenge, analyser, False)
         elif info.challenge_type == "aggregated":
             handle_aggregated(challenge, analyser)
         else:
             print("Unrecognised challenge type '{}'".format(info.challenge_type))
 
-def handle_pertweet(challenge, analyser):
+def handle_pertweet(challenge, analyser, verbose=False):
     """Handle a per-tweet challenge"""
     sentiments = {}
     for tweet in challenge.tweets:
-        sentiment_list = analyser.analyse_tweet(tweet.tweet, True)
+        sentiment_list = analyser.analyse_tweet(tweet.tweet, True, verbose)
         sentiments[tweet.tid] = [{'subject': subject, 'sentiment': sentiment} 
                 for (subject, sentiment) in sentiment_list]
     submission = {'challengeId': challenge.info.cid, 'perTweetSentiment': sentiments}

@@ -30,6 +30,10 @@ def edit_dist(a,b):
     return (len(a) + len(b) - 2 * sol[len(a) - 1][len(b) - 1]) / 2
 
 
+def clean(word):
+    return word.replace(',', '').replace('.', '')
+
+
 class SentimentAnalyser(object):
     def __init__(self):
         self.negative_words = webhandler.get_negative_words()
@@ -39,6 +43,7 @@ class SentimentAnalyser(object):
         self.comparison_words = ['better', 'worse', 'prefer']
         self.company_names = [c.name for c in self.companies]
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
     def splitt(self, tweet):
         subject1 = None
@@ -68,6 +73,12 @@ class SentimentAnalyser(object):
             return [(subject1, 1), (subject2, -1)]
 
     def analyse_tweet(self, tweet, multi=False):
+=======
+        print(self.positive_words)
+        print(self.negative_words)
+
+    def analyse_tweet(self, tweet, multi=False, verbose=False):
+>>>>>>> Stashed changes
         """Analyse a tweet, extracting the subject and sentiment"""
         sentiment = 0
         # subject = self.tweet_subject(tweet)
@@ -76,16 +87,22 @@ class SentimentAnalyser(object):
         negated = False
 
         for word in tweet.split(" "):
+<<<<<<< Updated upstream
             if word in self.comparison_words:
                 return self.splitt(tweet)
 
         for word in tweet.split(" "):
             if word in self.positive_words:
+=======
+            if clean(word) in self.positive_words:
+>>>>>>> Stashed changes
                 sentiment = sentiment + 1
-            if word in self.negative_words:
+            if clean(word) in self.negative_words:
                 sentiment = sentiment - 1
-            if word.upper() == 'NOT':
+            if clean(word).upper() == 'NOT':
                 negated = not negated
+            if verbose:
+                print(word, sentiment)
 
         if sentiment < 0:
             sentiment = -1
@@ -93,6 +110,9 @@ class SentimentAnalyser(object):
             sentiment = 1
         if negated:
             sentiment = -sentiment
+
+        if verbose:
+            print(tweet, subjects, sentiment)
 
         if multi:
             return [(s, sentiment) for s in subjects]
