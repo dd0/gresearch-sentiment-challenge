@@ -39,6 +39,7 @@ class SentimentAnalyser(object):
         self.comparison_words = ['better', 'worse', 'prefer']
         self.company_names = [c.name for c in self.companies]
 
+<<<<<<< HEAD
     def splitt(self, tweet):
         subject1 = None
         subject2 = None
@@ -66,7 +67,7 @@ class SentimentAnalyser(object):
         else:
             return [(subject1, 1), (subject2, -1)]
 
-    def analyse_tweet(self, tweet):
+    def analyse_tweet(self, tweet, multi=False):
         """Analyse a tweet, extracting the subject and sentiment"""
         sentiment = 0
         # subject = self.tweet_subject(tweet)
@@ -93,7 +94,10 @@ class SentimentAnalyser(object):
         if negated:
             sentiment = -sentiment
 
-        return [(subject, sentiment)]
+        if multi:
+            return [(s, sentiment) for s in subjects]
+        else:
+            return [(subject, sentiment)]
 
     def tweet_subject(self, tweet):
         best = None
@@ -118,7 +122,9 @@ class SentimentAnalyser(object):
     def remove_stop(self, words):
         res = []
         stop_words = ['i', 'is', 'that', 'ok', 'good', 'okay', 'bad',
-                      'cool', 'not', 'do', 'to', 'worse', 'than', 'am', 'My', 'my', 'a', 'had', 'and', 'so', 'are']
+                      'cool', 'not', 'do', 'to', 'worse', 'than',
+                      'am', 'My', 'my', 'a', 'had', 'and', 'so',
+                      'are']
         for word in words:
             if not word.lower() in stop_words:
                 res.append(word)

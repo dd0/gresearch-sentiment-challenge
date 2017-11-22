@@ -29,7 +29,7 @@ def handle_pertweet(challenge, analyser):
     """Handle a per-tweet challenge"""
     sentiments = {}
     for tweet in challenge.tweets:
-        sentiment_list = analyser.analyse_tweet(tweet.tweet)
+        sentiment_list = analyser.analyse_tweet(tweet.tweet, True)
         sentiments[tweet.tid] = [{'subject': subject, 'sentiment': sentiment} 
                 for (subject, sentiment) in sentiment_list]
     submission = {'challengeId': challenge.info.cid, 'perTweetSentiment': sentiments}
@@ -43,12 +43,16 @@ def handle_aggregated(challenge, analyser):
     min_time = min(t.time for t in challenge.tweets)
     max_time = max(t.time for t in challenge.tweets)
     for tweet in challenge.tweets:
-        [(company,result)] = analyser.analyse_tweet(tweet.tweet)
-        if (not (company in sentiments)):
-            sentiments[company] = {}
-            for i in range(min_time,max_time+1):
-                sentiments[company][i] = []
-        sentiments[company][tweet.time].append(result);
+        result_list  = analyser.analyse_tweet(tweet.tweet)
+        mult = 1
+        if (tweet.source.startswith("Verified")):
+            mult = 1.5
+        for (company,result) in result_list:
+            if (not (company in sentiments)):
+                sentiments[company] = {}
+                for i in range(min_time,max_time+1):
+                    sentiments[company][i] = []
+            sentiments[company][tweet.time].append(mult*result);
     sols = {}
     for company in sentiments:
         lastval = 0
