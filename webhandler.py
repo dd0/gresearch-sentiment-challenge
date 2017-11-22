@@ -4,7 +4,7 @@ import http.client
 import json
 
 SERVER_URL = "devrecruitmentchallenge.com"
-API_KEY = ""
+API_KEY = "59b505aa-1e62-4f4e-8b0b-16977331e485"
 
 class ChallengeInfo(object):
     """Information regarding a challenge"""
