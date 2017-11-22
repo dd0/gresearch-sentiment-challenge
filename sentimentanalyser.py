@@ -97,7 +97,10 @@ class SentimentAnalyser(object):
         elif sentiment > 0:
             sentiment = 1
         if negated:
-            sentiment = -sentiment
+            if sentiment != 0:
+                sentiment = -sentiment
+            else:
+                sentiment = -1
 
         if verbose:
             print(tweet, subjects, sentiment)
@@ -144,7 +147,7 @@ class SentimentAnalyser(object):
             candidates = [a + ' ' + b for a, b in zip(candidates, candidates[1:])]
 
         for c in candidates:
-            if edit_dist(c, obj) < (3 if len(obj) < 7 else 4):
+            if edit_dist(c, obj) < (3 if (len(c) < 7 or len(obj) < 7) else 3.1):
                 if (len(obj) > 4 and len(c) > 4) or c == obj:
                     if c != obj:
                         print(c, obj, edit_dist(c, obj))
