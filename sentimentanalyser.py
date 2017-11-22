@@ -1,5 +1,22 @@
 """Analyse tweets"""
 import webhandler
+import numpy as np
+
+def editDist(a,b):
+    sol=np.zeros(len(a),len(b))
+    for i in range(len(a)):
+        for j in range(len(b)):
+            add=0
+            if a[i]==b[j]:
+                add++
+            if i==0 or j==0:
+                sol[i][j]=add
+            else:
+                if add:
+                    sol[i][j]=sol[i-1][j-1]+1
+                else:
+                    sol[i][j]=max(sol[i][j-1],sol[i-1][j])
+    return sol[len(a)-1][len(b-1)]
 
 
 class SentimentAnalyser(object):
