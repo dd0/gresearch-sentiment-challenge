@@ -2,13 +2,13 @@
 import webhandler
 import numpy as np
 
-def editDist(a,b):
-    sol=np.zeros(len(a),len(b))
+def edit_dist(a,b):
+    sol=np.zeros((len(a),len(b)))
     for i in range(len(a)):
         for j in range(len(b)):
             add=0
             if a[i]==b[j]:
-                add++
+                add += 1
             if i==0 or j==0:
                 sol[i][j]=add
             else:
@@ -16,7 +16,7 @@ def editDist(a,b):
                     sol[i][j]=sol[i-1][j-1]+1
                 else:
                     sol[i][j]=max(sol[i][j-1],sol[i-1][j])
-    return sol[len(a)-1][len(b-1)]
+    return sol[len(a)-1][len(b)-1] - abs(len(a) - len(b))
 
 
 class SentimentAnalyser(object):
@@ -31,7 +31,7 @@ class SentimentAnalyser(object):
     def analyse_tweet(self, tweet):
         """Analyse a tweet, extracting the subject and sentiment"""
         sentiment = 0
-        subject = None
+        subject = self.tweet_subject(tweet)
         negated = False
 
         for word in tweet.split(" "):
@@ -39,8 +39,6 @@ class SentimentAnalyser(object):
                 sentiment = sentiment + 1
             if word in self.negative_words:
                 sentiment = sentiment - 1
-            if word in self.company_names:
-                subject = word
             if word.upper() == 'NOT':
                 negated = not negated
 
@@ -52,3 +50,23 @@ class SentimentAnalyser(object):
             sentiment = -sentiment
 
         return [(subject, sentiment)]
+
+    def tweet_subject(self, tweet):
+        best = None
+        best_my = None
+        best_score = -1
+
+        for name in self.company_names:
+            candidates = tweet.split(' ')
+            if ' ' in name:
+                candidates = [a + ' ' + b for a, b in zip(candidates, candidates[1:])]
+
+            for c in candidates:
+                score = edit_dist(c, name)
+                if score > best_score:
+                    best_score = score
+                    best = name
+                    best_my = c
+
+        # print(best, best_my, best_score)
+        return best
