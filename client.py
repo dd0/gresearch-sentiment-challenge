@@ -43,7 +43,7 @@ def handle_aggregated(challenge, analyser):
     min_time = min(t.time for t in challenge.tweets)
     max_time = max(t.time for t in challenge.tweets)
     for tweet in challenge.tweets:
-        result_list  = analyser.analyse_tweet(tweet.tweet)
+        result_list  = analyser.analyse_tweet(tweet.tweet, True)
         mult = 1
         if (tweet.source.startswith("Verified")):
             mult = 1.5
