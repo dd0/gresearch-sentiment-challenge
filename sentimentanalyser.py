@@ -36,8 +36,35 @@ class SentimentAnalyser(object):
         self.neutral_words = webhandler.get_neutral_words()
         self.positive_words = webhandler.get_positive_words()
         self.companies = webhandler.get_company_info()
-
+        self.comparison_words = ['better', 'worse', 'prefer']
         self.company_names = [c.name for c in self.companies]
+
+    def splitt(self, tweet):
+        subject1 = None
+        subject2 = None
+        negated = False
+        for word in tweet.split(" "):
+            if word.upper() == "WORSE":
+                negated = not negated
+            if word.upper() == 'NOT':
+                negated = not negated
+
+        cs = self.tweet_subjects(tweet)
+        for cand in cs:
+            if subject1 == None:
+                subject1 = cand
+            else:
+                subject2 = cand
+        alen = tweet.find(subject1)
+        blen = tweet.find(subject2)
+        if alen > blen:
+            tmp = subject1
+            subject1 = subject2
+            subject2 = tmp
+        if negated:
+            return [(subject1, -1), (subject2, 1)]
+        else:
+            return [(subject1, 1), (subject2, -1)]
 
     def analyse_tweet(self, tweet):
         """Analyse a tweet, extracting the subject and sentiment"""
@@ -46,6 +73,10 @@ class SentimentAnalyser(object):
         subjects = self.tweet_subjects(tweet)
         subject = subjects[0] if len(subjects) > 0 else "NONE"
         negated = False
+
+        for word in tweet.split(" "):
+            if word in self.comparison_words:
+                return self.splitt(tweet)
 
         for word in tweet.split(" "):
             if word in self.positive_words:
